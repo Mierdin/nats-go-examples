@@ -3,7 +3,6 @@
 package main
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/nats-io/nats.go"
@@ -17,7 +16,7 @@ func main() {
 		panic(err)
 	}
 
-	ec, err := nats.NewEncodedConn(nc, nats.DEFAULT_ENCODER)
+	ec, err := nats.NewEncodedConn(nc, nats.JSON_ENCODER)
 	if err != nil {
 		panic(err)
 	}
@@ -25,15 +24,25 @@ func main() {
 
 	log.Info("Connected to NATS and ready to send messages")
 
-	personChanSend := make(chan string)
-	ec.BindSendChan("hello_subject", personChanSend)
+	type Request struct {
+		Id int
+	}
+	personChanSend := make(chan *Request)
+	ec.BindSendChan("request_subject", personChanSend)
 
 	i := 0
 	for {
+
+		// Create instance of type Request with Id set to
+		// the current value of i
+		req := Request{Id: i}
+
+		// Just send to the channel! :)
+		log.Infof("Sending request %d", req.Id)
+		personChanSend <- &req
+
+		// Pause and increment counter
 		time.Sleep(time.Second * 1)
-		msg := fmt.Sprintf("Hello World! This is message %d", i)
-		log.Infof("Sending %s", msg)
-		personChanSend <- msg
 		i = i + 1
 	}
 }

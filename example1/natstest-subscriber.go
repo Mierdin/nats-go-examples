@@ -14,7 +14,7 @@ func main() {
 		panic(err)
 	}
 
-	ec, err := nats.NewEncodedConn(nc, nats.DEFAULT_ENCODER)
+	ec, err := nats.NewEncodedConn(nc, nats.JSON_ENCODER)
 	if err != nil {
 		panic(err)
 	}
@@ -22,12 +22,18 @@ func main() {
 
 	log.Info("Connected to NATS and ready to receive messages")
 
-	personChanRecv := make(chan string)
-	ec.BindRecvChan("hello_subject", personChanRecv)
+	// Make sure this type and its properties are exported
+	// so the serializer doesn't bork
+	type Request struct {
+		Id int
+	}
+	personChanRecv := make(chan *Request)
+	ec.BindRecvChan("request_subject", personChanRecv)
 
 	for {
-		msg := <-personChanRecv
+		// Wait for incoming messages
+		req := <-personChanRecv
 
-		log.Infof("Received: %s", msg)
+		log.Infof("Received request: %d", req.Id)
 	}
 }
