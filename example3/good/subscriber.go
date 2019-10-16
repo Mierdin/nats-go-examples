@@ -8,13 +8,10 @@ import (
 
 func main() {
 
-	var c comms.SubscriberComms
-	err := c.Init()
+	c, err := comms.NewSubscriberComms()
 	if err != nil {
 		panic(err)
 	}
-	defer c.Ec.Close()
-
 	defer c.Ec.Close()
 
 	log.Info("Connected to NATS and ready to receive messages")

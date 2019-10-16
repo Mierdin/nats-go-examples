@@ -10,8 +10,7 @@ import (
 
 func main() {
 
-	var c comms.PublisherComms
-	err := c.Init()
+	c, err := comms.NewPublisherComms()
 	if err != nil {
 		panic(err)
 	}
