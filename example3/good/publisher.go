@@ -3,16 +3,15 @@ package main
 import (
 	"time"
 
-	comms "nats-test/example3/bad/comms"
+	comms "nats-test/example3/good/comms"
 
 	log "github.com/sirupsen/logrus"
 )
 
 func main() {
 
-	// A single type for all comms means all our communication channels are
-	// properties of c.
-	c, err := comms.NewComms()
+	var c comms.PublisherComms
+	err := c.Init()
 	if err != nil {
 		panic(err)
 	}

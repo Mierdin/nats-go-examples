@@ -17,6 +17,12 @@ type Request struct {
 // Comms centralizes connection objects and channels so we have one place to
 // go in order to send or receive messages with NATS.
 type Comms struct {
+
+	// NATS connection types
+	Nc *nats.Conn
+	Ec *nats.EncodedConn
+
+	// Send/Receive Channels
 	RequestChanSend chan *Request
 	RequestChanRecv chan *Request
 }

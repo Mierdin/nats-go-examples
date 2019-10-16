@@ -3,17 +3,18 @@ package main
 import (
 	log "github.com/sirupsen/logrus"
 
-	comms "nats-test/example3/bad/comms"
+	comms "nats-test/example3/good/comms"
 )
 
 func main() {
 
-	// A single type for all comms means all our communication channels are
-	// properties of c.
-	c, err := comms.NewComms()
+	var c comms.SubscriberComms
+	err := c.Init()
 	if err != nil {
 		panic(err)
 	}
+	defer c.Ec.Close()
+
 	defer c.Ec.Close()
 
 	log.Info("Connected to NATS and ready to receive messages")
